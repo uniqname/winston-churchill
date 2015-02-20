@@ -1,0 +1,148 @@
+<script src="../winston-churchill.js"></script>
+
+<template id="wc-clock">
+    <style>
+        :host {
+            display: block;
+            opacity: 1;
+        }
+
+        :host:unresolved {
+            opacity: 0;
+        }
+        :host([face="digital"]) time {
+            background: #666;
+            border: 1px solid #333;
+            border-radius: .25em;
+            display: flex;
+            flex-flow: row nowrap;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 2.5em;
+            height: 30vw;
+            padding: .25em;
+        }
+
+        :host([face="digital"]) time > span {
+            background: #333;
+            color: hsl(25, 50%, 70%);
+            flex: 1 1 auto;
+            font-size: 25vw;
+            margin: 0 .0125em;
+        }
+
+        :host([face="digital"]) time > span::before {
+            content: attr(val);
+            display: block;
+        }
+
+        :host([face="digital"]) time > .formatted-time {
+            display: none;
+        }
+
+        :host([face="analog"]) time {
+            border-radius: 100em;
+            border: 1em solid #333;
+            display: block;
+            height: 80vw;
+            position: relative;
+            width: 80vw;
+        }
+
+        :host([face="analog"]) time > span {
+            background: #333;
+            content: '';
+            bottom: 50%;
+            display: block;
+            left: 50%;
+            position: absolute;
+            transform-origin: bottom left;
+            width: 50%;
+            overflow: visible;
+
+        }
+        :host([face="analog"]) time > .hour {
+            transform: translate(0, 100%) rotate(calc(({{ hour }} / 24 / 2 * 360deg) - 90deg));
+            height: .5em;
+            width: 33%;
+            overflow: visible;
+            z-index: 1;
+        }
+
+        :host([face="analog"]) time > .hour::before {
+            content: '';
+            border-radius: 100em;
+            background: #ccc;
+            display: block;
+            height: 1.25em;
+            width: 1.25em;
+            transform: translate(-50%, calc(-50% + .25em));
+            z-index: 1;
+        }
+
+        :host([face="analog"]) time > .min {
+            transform: translate(0, 100%) rotate(calc(({{ minute }} / 60 * 360deg) - 90deg));
+            border-bottom-width: .25em;
+            height: .25em;
+        }
+        :host([face="analog"]) time > .sec {
+            transform: translate(0, 100%) rotate(calc(({{ second }} / 60 * 360deg) - 90deg));
+            background: red;
+            height: 1px;
+        }
+
+        :host([face="analog"]) time > .formatted-time {
+            background: transparent;
+            border-bottom: none;
+            color: #ccc;
+            text-align: center;
+            font-family: "Cutive Mono", monospace;
+            font-size: 15vw;
+            transform: translate(-50%, 0);
+            width: 100%;
+            z-index: -1;
+        }
+    </style>
+    <time class="{{ theme }}" datetime="{{ current-time }}">
+        <span class="hour" val="{{ hour }}"></span>
+        <span class="min" val="{{ minute }}"></span>
+        <span class="sec" val="{{ second }}"></span>
+        <span class="formatted-time">{{hour}}:{{minute}}:{{second}}</span>
+    </time>
+</template>
+<script>
+(function () {
+    var interval;
+        Clock = wc.register('wc-clock', {
+          prototype: HTMLElement.prototype,
+          template: "#wc-clock"
+        });
+
+    /*Clock.template(wc.componentDoc.querySelector('#wc-clock'));*/
+
+    Clock.onCreated( function () {
+        var clock = this;
+
+        if (this.getAttribute('time') === 'current') {
+            /*interval = window.setInterval(setTheTime, 1000);*/
+            setTheTime();
+        }
+
+        function setTheTime() {
+            var time = new Date(),
+                leadingZero = function (num) {
+                    return (num < 10 ? '0' : '') + num;
+                };
+            clock.data = {
+                hour: leadingZero(time.getHours()),
+                minute: leadingZero(time.getMinutes()),
+                second: leadingZero(time.getSeconds())
+            };
+        }
+    });
+
+    Clock.onDetached( function () {
+        window.clearInterval(interval);
+    });
+})();
+</script>

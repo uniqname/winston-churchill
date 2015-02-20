@@ -1,0 +1,29 @@
+{
+  "name": "winston-churchill",
+  "version": "1.0.0",
+  "description": "A web components library",
+  "main": "winston-churchill.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uniqname/winston-churchill.git"
+  },
+  "keywords": [
+    "web",
+    "components"
+  ],
+  "author": "Cory Brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uniqname/winston-churchill/issues"
+  },
+  "homepage": "https://github.com/uniqname/winston-churchill",
+  "devDependencies": {
+    "gulp-browserify": "^0.5.1",
+    "gulp-traceur": "^0.17.0",
+    "gulp-uglify": "^1.1.0",
+    "vinyl-transform": "^1.0.0"
+  }
+}

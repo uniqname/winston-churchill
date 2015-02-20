@@ -1,8 +1,10 @@
-var render = require('./domingo');
+var render = require('./domingo2');
 
 window.wc = {
+    componentDoc: document.currentScript.ownerDocument,
     register: function (name, config) {
-        var onCreates = [],
+        var importDoc = this.componentDoc,
+            onCreates = [],
             onAttacheds = [],
             onDetatcheds = [],
             onAttrChgds = [],
@@ -151,7 +153,9 @@ window.wc = {
         })();
 
         WCComponent = document.registerElement(name, {
-            prototype: proto,
+            prototype: (function () {
+                return proto;
+            })(),
             extends: config.extends
         });
 
@@ -165,12 +169,29 @@ window.wc = {
             });
         };
 
+        WCComponent.onCreated = (fn, futureOnly) => {
+            var thisComponent = this;
+            onCreated.call(thisComponent, fn);
+            if (!futureOnly) {
+                [].slice.call(document.querySelectorAll(name)).forEach( component => {
+                    fn.call(component);
+                });
+            }
+        };
+
+        // Do I need that future thing for attached as well?
+        WCComponent.onAttached = onAttached;
+        WCComponent.onDetached = onDetached;
+        WCComponent.onAttributeChanged = onAttributeChanged;
+
+        if (config.template) {
+            let template = importDoc.querySelector(config.template);
+            if (template) {
+                WCComponent.onCreated(function () {
+                    this.template = template;
+                });
+            }
+        }
         return WCComponent;
     }
 };
-
-var xFoo = wc.register('x-foo', {
-  prototype: HTMLElement.prototype
-});
-
-xFoo.template(document.querySelector('template'));
