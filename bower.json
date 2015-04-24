@@ -1,0 +1,21 @@
+{
+  "name": "winston-churchill",
+  "main": "winston-churchill.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/uniqname/winston-churchill",
+  "authors": [
+    "Cory Brown <oh.wise.man@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+      "webcomponentsjs": "https://github.com/webcomponents/webcomponentsjs.git#0.6.1"
+  }
+}

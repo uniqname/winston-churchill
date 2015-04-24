@@ -1,5 +1,3 @@
-<script src="../winston-churchill.js"></script>
-
 <template id="wc-clock">
     <style>
         :host {
@@ -110,39 +108,4 @@
         <span class="formatted-time">{{hour}}:{{minute}}:{{second}}</span>
     </time>
 </template>
-<script>
-(function () {
-    var interval;
-        Clock = wc.register('wc-clock', {
-          prototype: HTMLElement.prototype,
-          template: "#wc-clock"
-        });
-
-    /*Clock.template(wc.componentDoc.querySelector('#wc-clock'));*/
-
-    Clock.onCreated( function () {
-        var clock = this;
-
-        if (this.getAttribute('time') === 'current') {
-            /*interval = window.setInterval(setTheTime, 1000);*/
-            setTheTime();
-        }
-
-        function setTheTime() {
-            var time = new Date(),
-                leadingZero = function (num) {
-                    return (num < 10 ? '0' : '') + num;
-                };
-            clock.data = {
-                hour: leadingZero(time.getHours()),
-                minute: leadingZero(time.getMinutes()),
-                second: leadingZero(time.getSeconds())
-            };
-        }
-    });
-
-    Clock.onDetached( function () {
-        window.clearInterval(interval);
-    });
-})();
-</script>
+<script src="wc-clock.js"></script>
