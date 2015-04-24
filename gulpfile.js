@@ -1,13 +1,63 @@
 var gulp = require('gulp'),
+    glob = require("glob"),
     path = require('path'),
     pkg = require('./package.json'),
-    browserify = require('gulp-browserify'),
+    babelify = require('babelify'),
+    browserify = require('browserify'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
+    // uglify = require('gulp-uglify'),
+    uglify = require("uglify-js").minify,
+    sourcemaps = require('gulp-sourcemaps'),
     jshint = require('gulp-jshint'),
-    uglify = require('gulp-uglify'),
-    transform = require('vinyl-transform'),
-    rename = require('gulp-rename'),
-    traceur = require('gulp-traceur'),
-    exorcist = require('exorcist');
+    gutil = require('gulp-util'),
+    // size = require('gulp-size'),
+    fs = require('fs'),
+
+    extendWinston = function (extentions, extentionsBasePath) {
+        //Gulp plugin requires
+        var through2 = require('through2'),
+            plexer = require('plexer'),
+            mergestream = require('merge-stream'),
+            path = require('path');
+
+        // console.log(vinylFile.inspect());
+
+        var restoreStream = through2.obj();
+
+        var stream = through2.obj(function(file, enc, cb) {
+            // cb(<error>, <vinylFile>)
+
+            extentions.forEach(function (extpath) {
+
+            });
+
+
+
+
+        }, function (cb) {
+            restoreStream.end();
+            cb();
+        });
+
+        stream.restore = function (options) {
+            var tempStream;
+
+            options = options || {};
+
+            if (options.end) {
+                return restoreStream;
+            }
+
+            return plexer(
+                {objectMode: true},
+                tmpStream,
+                mergestream(restoreStream, tmpStream)
+            );
+        };
+
+        return stream;
+    };
 
 gulp.task('lint', function() {
     gulp.src('./src/*.js')
@@ -15,21 +65,63 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('browserify', function () {
-    gulp.src('./src/index.js')
-        .pipe(browserify({
-            entries: ['./index.js'],
-            debug: true
-        }))
-        .pipe(traceur())
-        .pipe(transform(function() { // Extracts the inline source maps to an external file
-            return exorcist(path.join(__dirname, '/', pkg.name + '.js.map'));
-        }))
-        .pipe(rename(pkg.name + '.min.js'))
-        .pipe(rename('winston-churchill.js'))
-        .pipe(gulp.dest('./'));
+gulp.task('build-winston', function () {
+    gulp.src('./src/register.js')
+        .pipe(extendWinston(['on', 'template', 'data', 'render'],
+                            './src/extentions/'));
 });
 
-gulp.task('default', ['lint', 'browserify'], function () {
+gulp.task('transpile', function () {
+    var bundler = browserify({ debug: true }),
+        b;
+
+    bundler.transform(babelify);
+    bundler.add('./src/wc.js');
+
+    b = bundler.bundle()
+        .on('error', gutil.log)
+        .pipe(fs.createWriteStream('./dist/wc.js'));
 
 });
+
+gulp.task('distro', ['transpile'], function () {
+    var bundler = browserify({ debug: true }),
+        b;
+
+    bundler.transform(babelify);
+    bundler.add('./distro.js');
+
+    b = bundler.bundle()
+        .on('error', gutil.log)
+        .pipe(fs.createWriteStream('./dist/winston-churchill.js'));
+});
+
+
+
+gulp.task('components', function () {
+
+    glob('./components/**/*.es', function (err, files) {
+        console.log('glob args: ', arguments);
+
+        files.forEach(function (file) {
+
+            var bundler = browserify({ debug: true }),
+                b;
+
+            bundler.transform(babelify);
+            bundler.add(file);
+
+            b = bundler.bundle()
+                .on('error', gutil.log)
+                .pipe(function () {
+                    console.log('this: ', this);
+                    console.log('arguments: ', arguments);
+                    return this;
+                })
+                .pipe(fs.createWriteStream('./dist/temp.js'));
+        });
+    });
+
+});
+
+gulp.task('default', ['lint', 'distro']);

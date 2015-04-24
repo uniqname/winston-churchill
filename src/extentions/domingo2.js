@@ -1,4 +1,4 @@
-var r = (templateFrag, data) => {
+export default function r(templateFrag, data) {
 
     [].slice.call(templateFrag.childNodes).map( node => {
         if (node.nodeType === 3) {
@@ -61,6 +61,4 @@ var r = (templateFrag, data) => {
         }
         return newStr;
     }
-};
-
-module.exports = r;
+}
