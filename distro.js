@@ -8,7 +8,7 @@
     // import data from './extentions/data';
     // import template, { templateFragment} from './extentions/template';
 
-    evts = require('./src/extentions/on'),
+    evts = require('./src/extentions/events'),
     render = require('./src/extentions/render'),
     data = require('./src/extentions/data'),
     templates = require('./src/extentions/template');
