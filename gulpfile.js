@@ -6,58 +6,15 @@ var gulp = require('gulp'),
     browserify = require('browserify'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
-    // uglify = require('gulp-uglify'),
-    uglify = require("uglify-js").minify,
+    streamify = require('gulp-streamify'),
+    uglify = require('gulp-uglify'),
+    // uglify = require("uglify-js").minify,
+    rename = require('gulp-rename'),
     sourcemaps = require('gulp-sourcemaps'),
     jshint = require('gulp-jshint'),
     gutil = require('gulp-util'),
     // size = require('gulp-size'),
-    fs = require('fs'),
-
-    extendWinston = function (extentions, extentionsBasePath) {
-        //Gulp plugin requires
-        var through2 = require('through2'),
-            plexer = require('plexer'),
-            mergestream = require('merge-stream'),
-            path = require('path');
-
-        // console.log(vinylFile.inspect());
-
-        var restoreStream = through2.obj();
-
-        var stream = through2.obj(function(file, enc, cb) {
-            // cb(<error>, <vinylFile>)
-
-            extentions.forEach(function (extpath) {
-
-            });
-
-
-
-
-        }, function (cb) {
-            restoreStream.end();
-            cb();
-        });
-
-        stream.restore = function (options) {
-            var tempStream;
-
-            options = options || {};
-
-            if (options.end) {
-                return restoreStream;
-            }
-
-            return plexer(
-                {objectMode: true},
-                tmpStream,
-                mergestream(restoreStream, tmpStream)
-            );
-        };
-
-        return stream;
-    };
+    fs = require('fs');
 
 gulp.task('lint', function() {
     gulp.src('./src/*.js')
@@ -65,13 +22,7 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('build-winston', function () {
-    gulp.src('./src/register.js')
-        .pipe(extendWinston(['on', 'template', 'data', 'render'],
-                            './src/extentions/'));
-});
-
-gulp.task('transpile', function () {
+gulp.task('core', ['lint'], function () {
     var bundler = browserify({ debug: true }),
         b;
 
@@ -80,11 +31,15 @@ gulp.task('transpile', function () {
 
     b = bundler.bundle()
         .on('error', gutil.log)
-        .pipe(fs.createWriteStream('./dist/wc.js'));
+        .pipe(source('./wc.js'))
+        .pipe(gulp.dest('./dist'))
+        .pipe(streamify(uglify()))
+        .pipe(rename('wc.min.js'))
+        .pipe(gulp.dest('./dist'));
 
 });
 
-gulp.task('distro', ['transpile'], function () {
+gulp.task('distro', ['lint'], function () {
     var bundler = browserify({ debug: true }),
         b;
 
@@ -93,7 +48,12 @@ gulp.task('distro', ['transpile'], function () {
 
     b = bundler.bundle()
         .on('error', gutil.log)
-        .pipe(fs.createWriteStream('./dist/winston-churchill.js'));
+        .pipe(source('./distro.js'))
+        .pipe(rename('winston-churchill.js'))
+        .pipe(gulp.dest('./dist'))
+        .pipe(streamify(uglify()))
+        .pipe(rename('winston-churchill.min.js'))
+        .pipe(gulp.dest('./dist'));
 });
 
 
@@ -124,4 +84,4 @@ gulp.task('components', function () {
 
 });
 
-gulp.task('default', ['lint', 'distro']);
+gulp.task('default', ['distro', 'core']);
