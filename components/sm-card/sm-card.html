@@ -1,4 +1,4 @@
-<script src="../winston-churchill.js"></script>
+<script src="../../dist/winston-churchill.js"></script>
 <template id="wc-clock">
     <!-- Structural style only -->
     <style>
@@ -18,9 +18,8 @@
         :host {
             display: block;
             opacity: 1;
-
-            width: 4.845em; /* height * golden ratio (1.618) */
-            height: 3em;
+            position: relative;
+            padding: .5em;
             box-shadow: .25em .25em 1em hsla(0, 0%, 0%, .25);
         }
 
@@ -28,9 +27,87 @@
             opacity: 0;
         }
 
+        [for] {
+            display: block;
+        }
+
+        [for="text"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .reference {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size:1.5em;
+        }
+
+        figure {
+            margin: 0;
+            position: relative;
+        }
+
+        .toggler {
+            display: none;
+        }
+
+        .toggler + [for] {
+            opacity: 0;
+            z-index: -1;
+        }
+        .toggler:checked + [for] {
+            opacity: 1;
+            z-index: 1;
+        }
 
     </style>
+    <figure>
+        <input type="radio" class="toggler" id="reference" name="sm-card-toggle-{{reference}}" checked/>
+        <label for="text">
+            <figcaption class="reference">{{reference}}</figcaption>
+        </label>
+
+        <input type="radio" class="toggler" id="text" name="sm-card-toggle-{{reference}}"/>
+        <label for="reference">
+            <div class="text">
+                <content></content>
+            </div>
+        </label>
+    </figure>
 </template>
 <script>
+var queryImport = (function () {
+        var doc = document.currentScript.ownerDocument;
+        return function (sel) {
+            return doc.querySelector(sel);
+        };
+    })(),
+    Card = WC.register('sm-card');
 
+    Card.prototype.on('data', function (data) {
+        this.render(this.templateFragment, data);
+    });
+
+	Card.prototype.on('created', function () {
+        var data = {
+            reference: this.getAttribute('reference')
+        };
+
+		this.template = queryImport('template');
+        this.data = data;
+	});
+
+    Card.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
+
+        if ( attrName === 'reference') {
+            this.data = {
+                reference: this.getAttribute('reference')
+            };
+        }
+    });
 </script>

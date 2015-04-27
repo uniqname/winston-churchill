@@ -2,7 +2,7 @@ export default function data(WC) {
 
     if (WC.missingDeps('data', ['on', 'trigger']).length) { return; }
 
-    WC.extentions.on('created', function () {
+    WC.extensions.on('created', function () {
         var data = {};
         Object.defineProperty(this, 'data', {
             get: () => data,
