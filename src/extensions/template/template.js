@@ -1,8 +1,9 @@
 export function template(WC) {
-
     if (WC.missingDeps('template', ['on']).length) { return; }
+
+    let doc = document.currentScript.ownerDocument;
     WC.extensions.on('created', function () {
-        var templateEl;
+        let templateEl = doc.querySelector('template');
 
         Object.defineProperty(this, 'template', {
             get: () => templateEl,
@@ -13,7 +14,7 @@ export function template(WC) {
 
 export function templateFragment(WC) {
 
-    if (WC.missingDeps('template', ['on']).length) { return; }
+    if (WC.missingDeps('templateFragment', ['on']).length) { return; }
 
     WC.extensions.on('created', function () {
         Object.defineProperty(this, 'templateFragment', {

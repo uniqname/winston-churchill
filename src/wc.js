@@ -29,6 +29,10 @@ let extensions = {},
                     return missing;
                 }, []);
 
+                if (!WC.extensions[extention]) {
+                    WC.extensions[extention] = true;
+                }
+
                 if (missings.length) {
                     console.error('The Winsoton Churchill `' + extention + '` extention is missing these dependencies: \n' + missings.join('\n,'));
                 }

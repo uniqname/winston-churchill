@@ -3,19 +3,28 @@
 <head>
     <title>Demo for Winston Churchill</title>
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <!-- <script src="dist/winston-churchill.js"></script> -->
+    <link rel="import" href="/components/wc-clock/wc-clock.html" />
+    <link rel="import" href="/components/flash-card/flash-card.html" />
 
-    <!-- <link rel="import" href="/components/wc-clock/wc-clock.html" /> -->
-    <link rel="import" href="/components/sm-card/sm-card.html" />
+    <style>
+    body {
+        display: flex;
+        flex-flow: row wrap;
+    }
+    flash-card {
+        flex: 45%;
+        margin: 1em 0;
+    }
+    </style>
 </head>
 <body>
-    <sm-card reference="Moroni 10:4">
+    <flash-card reference="Moroni 10:4">
         And when ye shall receive these things, I would exhort you that ye would ask God, the Eternal Father, in the name of Christ, if these things are not true; and if ye shall ask with a sincere heart, with real intent, having faith in Christ, he will manifest the truth of it unto you, by the power of the Holy Ghost.
-    </sm-card>
-    <sm-card reference="Alma 7:11">
+    </flash-card>
+    <flash-card reference="Alma 7:11">
         And he shall go forth, suffering pains and afflictions and temptations of every kind; and this that the word might be fulfilled which saith he will take upon him the pains and the sicknesses of his people.
-    </sm-card>
+    </flash-card>
 
-    <!-- <wc-clock time="current" face="digital" ></wc-clock> -->
+    <wc-clock time="current" face="digital" ></wc-clock>
 </body>
 </html>
