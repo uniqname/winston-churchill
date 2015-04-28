@@ -6,10 +6,12 @@ export default function render(WC) {
 
     Object.defineProperty(WC.extensions, 'render', {
         get: () => function () {
-            this.createShadowRoot()
-                .appendChild( r(this.templateFragment, this.data) );
-            this.trigger('render');
+            let shadowRoot = this.shadowRoot || this.createShadowRoot();
 
+            [...shadowRoot.childNodes]
+                    .forEach(node => shadowRoot.removeChild(node));
+            shadowRoot.appendChild( r(this.templateFragment, this.data) );
+            this.trigger('render');
         },
         set: () => console.error('templateFragment is not settable')
     });
