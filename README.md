@@ -41,4 +41,6 @@ An instance  of a winston chruchill component will have all included extensions 
 
 ##Extensions
 
-[data](/src/extensions/data/readme.md)
+- [data](/src/extensions/data/readme.md)
+- [events](/src/extensions/events/readme.md)
+- [render](/src/extensions/render/readme.md)

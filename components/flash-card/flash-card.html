@@ -1,0 +1,107 @@
+<script src="../../dist/winston-churchill.js"></script>
+<template id="flash-card">
+    <!-- Structural style only -->
+    <style>
+
+        /*
+            best practice:
+                Make components opaque until they have been resolved.
+                Components are resolved when they have been registered
+                with the document, internal dependencies have resolved,
+                and component markup exists in the DOM.
+        */
+
+        /*
+            The :host pseudo class refers to the element "hosting" the shadow DOM.
+            In the case of web components, it is the component itself.
+        */
+        :host {
+            display: flex;
+            opacity: 1;
+            position: relative;
+            padding: .5em 1em;
+            /*box-shadow: .25em .25em 1em hsla(0, 0%, 0%, .25);*/
+            border: 1px solid hsla(0, 0%, 0%, .2);
+        }
+
+        :host:unresolved {
+            opacity: 0;
+        }
+
+        :host > * {
+            align-items: stretch;
+        }
+
+        [for] {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        [for="text"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .reference {
+            font-size:1.5em;
+        }
+
+        figure {
+            margin: 0;
+            position: relative;
+        }
+
+        .toggler {
+            display: none;
+        }
+
+        .toggler + [for] {
+            opacity: 0;
+            z-index: -1;
+            transition: all 1s;
+            transform: rotate3d(0, 1, 0, 180deg);
+            transform-style: preserve-3d;
+        }
+        .toggler:checked + [for] {
+            opacity: 1;
+            z-index: 1;
+            transform: rotate3d(0, 0, 0, 0deg);
+        }
+
+    </style>
+    <figure>
+        <input type="radio" class="toggler" id="reference" name="sm-card-toggle-{{reference}}" checked/>
+        <label for="text">
+            <figcaption class="reference">{{reference}}</figcaption>
+        </label>
+
+        <input type="radio" class="toggler" id="text" name="sm-card-toggle-{{reference}}"/>
+        <label for="reference">
+            <div class="text">
+                <content></content>
+            </div>
+        </label>
+    </figure>
+</template>
+<script>
+var Card = WC.register('flash-card');
+
+    Card.prototype.on('created', function () {
+        this.data = {
+            reference: this.getAttribute('reference')
+        };
+    });
+
+    Card.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
+
+        if ( attrName === 'reference') {
+            this.data = {
+                reference: this.getAttribute('reference')
+            };
+        }
+    });
+</script>
