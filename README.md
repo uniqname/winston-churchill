@@ -40,3 +40,5 @@ These initialization functions will typically bind to the either the component's
 An instance  of a winston chruchill component will have all included extensions available to it. Nearly all of these extensions are optional, with events being the one exception.
 
 ##Extensions
+
+(data)[/src/extensions/data/readme.md]
