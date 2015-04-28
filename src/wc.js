@@ -1,5 +1,17 @@
 import register from './register';
 
+// Array.from polyfill
+// This is not a spec compliant polyfil but covers the vast
+// majority of use cases. In particular it fills how Bable uses
+// it to transpile the spread operator.
+
+// TODO: Need to research why babel trys to use Array.from
+//       without implementing a polyfil internally as they
+//       do with other things. As of the time of this note,
+//       Array.from is only implemented in FireFox.
+if (!Array.from)  Array.from = arrayLike => [].slice.call(arrayLike);
+
+
 let extensions = {},
 
     WC = Object.create(null, {
@@ -28,6 +40,10 @@ let extensions = {},
                     }
                     return missing;
                 }, []);
+
+                if (!WC.extensions[extention]) {
+                    WC.extensions[extention] = true;
+                }
 
                 if (missings.length) {
                     console.error('The Winsoton Churchill `' + extention + '` extention is missing these dependencies: \n' + missings.join('\n,'));

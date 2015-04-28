@@ -1,5 +1,5 @@
 <script src="../../dist/winston-churchill.js"></script>
-<template id="wc-clock">
+<template id="flash-card">
     <!-- Structural style only -->
     <style>
 
@@ -16,19 +16,26 @@
             In the case of web components, it is the component itself.
         */
         :host {
-            display: block;
+            display: flex;
             opacity: 1;
             position: relative;
-            padding: .5em;
-            box-shadow: .25em .25em 1em hsla(0, 0%, 0%, .25);
+            padding: .5em 1em;
+            /*box-shadow: .25em .25em 1em hsla(0, 0%, 0%, .25);*/
+            border: 1px solid hsla(0, 0%, 0%, .2);
         }
 
         :host:unresolved {
             opacity: 0;
         }
 
+        :host > * {
+            align-items: stretch;
+        }
+
         [for] {
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         [for="text"] {
@@ -40,10 +47,6 @@
         }
 
         .reference {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-size:1.5em;
         }
 
@@ -59,10 +62,14 @@
         .toggler + [for] {
             opacity: 0;
             z-index: -1;
+            transition: all 1s;
+            transform: rotate3d(0, 1, 0, 180deg);
+            transform-style: preserve-3d;
         }
         .toggler:checked + [for] {
             opacity: 1;
             z-index: 1;
+            transform: rotate3d(0, 0, 0, 0deg);
         }
 
     </style>
@@ -81,26 +88,13 @@
     </figure>
 </template>
 <script>
-var queryImport = (function () {
-        var doc = document.currentScript.ownerDocument;
-        return function (sel) {
-            return doc.querySelector(sel);
-        };
-    })(),
-    Card = WC.register('sm-card');
+var Card = WC.register('flash-card');
 
-    Card.prototype.on('data', function (data) {
-        this.render(this.templateFragment, data);
-    });
-
-	Card.prototype.on('created', function () {
-        var data = {
+    Card.prototype.on('created', function () {
+        this.data = {
             reference: this.getAttribute('reference')
         };
-
-		this.template = queryImport('template');
-        this.data = data;
-	});
+    });
 
     Card.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
 
