@@ -1,16 +1,6 @@
 ( function () {
-	var queryImport = (function () {
-			var doc = document.currentScript.ownerDocument;
-			return function (sel) {
-				return doc.querySelector(sel);
-			};
-		})(),
-		interval,
+	var interval,
 		Clock = WC.register( 'wc-clock' );
-
-	Clock.prototype.on( 'created', function () {
-		this.template = queryImport('template');
-	} );
 
 	Clock.prototype.on( 'attached', function () {
 		var clock = this,
@@ -33,10 +23,6 @@
 				second: leadingZero( time.getSeconds() )
 			};
 		}
-	});
-
-	Clock.prototype.on('data', function (data) {
-		this.render(this.templateFragment, data);
 	});
 
 	Clock.prototype.on( 'detached', function () {
