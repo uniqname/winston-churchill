@@ -7,32 +7,19 @@ let natives = {
     events = {},
     initQueue = qName => events[ qName ] = [],
     onEvent = function ( evtName, fn ) {
-        let queue = events[ evtName ],
-            componentInstance = this;
-
-        if ( typeof fn === 'function' ) {
-            if ( !queue ) {
-                queue = initQueue( evtName );
-            }
-
-            queue.push( fn );
-        }
+        if ( typeof fn !== 'function' ) { return; }
+        let queue = events[ evtName ] || initQueue( evtName);
+        queue.push( fn );
     },
-    trigger = function (eventName, payload) {
-        let componentInstance = this,
-            queue = events[ eventName ];
-
-        if ( queue ) {
-            queue.forEach( ( listener ) => {
-                listener.call( componentInstance, payload );
-            } );
-        }
+    trigger = function (eventName, payload = {}, bubbles=true) {
+        let queue = events[ eventName ] || [];
+        queue.forEach( listener => listener.call( this, payload ));
+        this.dispatchEvent( new CustomEvent(eventName, {detail: payload,
+                                                        bubbles: bubbles}) );
     };
 
 export function on(WC) {
-
     if (WC.missingDeps('on', []).length) { return; }
-
     // Binding to the native Web Component lifecycle methods
     // causing them to trigger relevant callbacks.
     Object.keys(natives).forEach(key => {
@@ -40,12 +27,10 @@ export function on(WC) {
             trigger.call(this, key, ...arguments);
         };
     });
-
     WC.extensions.on = onEvent;
 }
 
 export function trigger(WC) {
     if (WC.missingDeps('trigger', []).length) { return; }
     WC.extensions.trigger = trigger;
-
 }

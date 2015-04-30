@@ -19,9 +19,8 @@
             display: flex;
             opacity: 1;
             position: relative;
-            padding: .5em 1em;
             /*box-shadow: .25em .25em 1em hsla(0, 0%, 0%, .25);*/
-            border: 1px solid hsla(0, 0%, 0%, .2);
+            /*border: 1px solid hsla(0, 0%, 0%, .2);*/
         }
 
         :host:unresolved {
@@ -60,14 +59,17 @@
         }
 
         .toggler + [for] {
-            opacity: 0;
+            backface-visibility: hidden;
+            border: 1px solid hsla(0, 0%, 0%, .2);
+            padding: .5em 1em;
+            /*opacity: 0;*/
             z-index: -1;
             transition: all 1s;
             transform: rotate3d(0, 1, 0, 180deg);
             transform-style: preserve-3d;
         }
         .toggler:checked + [for] {
-            opacity: 1;
+            /*opacity: 1;*/
             z-index: 1;
             transform: rotate3d(0, 0, 0, 0deg);
         }

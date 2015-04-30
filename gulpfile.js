@@ -8,12 +8,10 @@ var gulp = require('gulp'),
     buffer = require('vinyl-buffer'),
     streamify = require('gulp-streamify'),
     uglify = require('gulp-uglify'),
-    // uglify = require("uglify-js").minify,
     rename = require('gulp-rename'),
     sourcemaps = require('gulp-sourcemaps'),
     jshint = require('gulp-jshint'),
     gutil = require('gulp-util'),
-    // size = require('gulp-size'),
     fs = require('fs');
 
 gulp.task('lint', function() {
@@ -58,10 +56,13 @@ gulp.task('distro', ['lint'], function () {
 
 
 
-gulp.task('components', function () {
+gulp.task('es', function () {
+    var globOptions = {
+    ignore: ['/node_modules/**/*',
+             '/bower_components/**/*']
+    };
 
-    glob('./components/**/*.es', function (err, files) {
-        console.log('glob args: ', arguments);
+    glob('./**/*.es', globOptions, function (err, files) {
 
         files.forEach(function (file) {
 
@@ -71,17 +72,21 @@ gulp.task('components', function () {
             bundler.transform(babelify);
             bundler.add(file);
 
+            console.log(path.basename(file));
+
             b = bundler.bundle()
                 .on('error', gutil.log)
-                .pipe(function () {
-                    console.log('this: ', this);
-                    console.log('arguments: ', arguments);
-                    return this;
-                })
-                .pipe(fs.createWriteStream('./dist/temp.js'));
+                .pipe(source(path.basename(file)))
+                .pipe(rename(path.basename(file, '.es') + '.js'))
+                .pipe(gulp.dest(path.dirname(file)));
         });
     });
 
 });
 
-gulp.task('default', ['distro', 'core']);
+gulp.task('default', ['distro', 'core', 'es']);
+
+var o = {
+    ignore: ['/node_modules/**/*',
+             '/bower_components/**/*']
+};
