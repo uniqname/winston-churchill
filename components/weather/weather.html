@@ -1,0 +1,74 @@
+<script src="../../dist/winston-churchill.js"></script>
+<script src="../wc-data/wc-data.html"></script>
+<script src="/bower_components/object.observe/dist/object-observe-lite.min.js"></script>
+<template id="wc-weather">
+    <!-- Structural style only -->
+    <style>
+
+        /*
+            best practice:
+                Make components opaque until they have been resolved.
+                Components are resolved when they have been registered
+                with the document, internal dependencies have resolved,
+                and component markup exists in the DOM.
+        */
+
+        /*
+            The :host pseudo class refers to the element "hosting" the shadow DOM.
+            In the case of web components, it is the component itself.
+        */
+        :host:unresolved {
+            opacity: 0;
+        }
+    </style>
+    <figure>
+        <figcaption>{{location}}: {{weather[0].description}}</figcaption>
+    </figure>
+    <wc-data src="http://api.openweathermap.org/data/2.5/weather?q={{location}}"></wc-data>
+</template>
+<script>
+// Object.assign polyfill.
+// TODO: Abstract this to a seperate file.
+(function () {
+    if (!Object.assign) {
+      Object.defineProperty(Object, 'assign', {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: function(target, firstSource) {
+          'use strict';
+          if (target === undefined || target === null) {
+            throw new TypeError('Cannot convert first argument to object');
+          }
+
+          var to = Object(target);
+          for (var i = 1; i < arguments.length; i++) {
+            var nextSource = arguments[i];
+            if (nextSource === undefined || nextSource === null) {
+              continue;
+            }
+            nextSource = Object(nextSource);
+
+            var keysArray = Object.keys(Object(nextSource));
+            for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+              var nextKey = keysArray[nextIndex];
+              var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+              if (desc !== undefined && desc.enumerable) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+          return to;
+        }
+      });
+    }
+})();
+
+    var Weather = WC.register('wc-weather');
+
+    Weather.prototype.on('wc-data', function (evt) {
+        Object.assign(this.data || {}, evt.details);
+    });
+
+
+</script>

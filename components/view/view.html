@@ -1,0 +1,44 @@
+<script src="../../dist/winston-churchill.js"></script>
+
+<script>
+    var View = WC.register('wc-view');
+
+    //Ensure a transform function extists.
+    View.prototype.on('created', function () {
+        this.transform = this.transform || function () {};
+    });
+
+
+    View.prototype.on('data', function (data) {
+
+        //model data applied to the view component represents a view-model.
+        //The model data is run through a transform function to create
+        // view model.
+        let vm = Object.assign({}, data).map(this.transform);
+
+        // Futher additions to the view-model after the transformations
+        // are prevented to ensure object integrity.
+        // If additional transforms are needed, update the transform method
+        // and reapply the data model to the view.
+        vm = Object.preventExtensions(data);
+
+        //Make observable
+
+        Object.keys(enclosedData).forEach( (key) => {
+            Object.defineProperty(data, key, {
+                enumerable: true,
+                get: () => enclosedData[key],
+                set: (val) => {
+                    let old = enclosedData[key];
+                    enclosedData[key] = val;
+                    this.trigger('data:change', {
+                        name: key,
+                        type: update,
+                        newValue: val,
+                        oldValue: old
+                    });
+                }
+            });
+        });
+    });
+</script>
