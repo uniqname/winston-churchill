@@ -1,0 +1,31 @@
+<script src="../../dist/winston-churchill.js"></script>
+<template id="todo-item">
+    <!-- Structural style only -->
+    <style>
+        :host:unresolved { opacity: 0; }
+
+        summary {
+            display: flex;
+        }
+
+        summary input,
+        content[select="h1"]::content > h1 {
+            flex: 1 1 auto;
+        }
+    </style>
+
+    <details>
+        <summary>
+            <input type="checkbox" /><content select="h1"></content>
+        </summary>
+        <content></content>
+    </details>
+
+</template>
+<script>
+    var TodoItem = WC.register('todo-item');
+
+    TodoItem.prototype.on('created', function () {
+        this.render(this.templateFragment, {});
+    });
+</script>
