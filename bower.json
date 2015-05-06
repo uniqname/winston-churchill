@@ -16,6 +16,8 @@
     "tests"
   ],
   "dependencies": {
-      "webcomponentsjs": "https://github.com/webcomponents/webcomponentsjs.git#0.6.1"
+    "webcomponentsjs": "https://github.com/webcomponents/webcomponentsjs.git#0.6.1",
+    "object.observe": "~0.2.4",
+    "fetch": "~0.8.1"
   }
 }

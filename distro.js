@@ -20,15 +20,23 @@
         evts = require('./src/extensions/events/events'),
         render = require('./src/extensions/render/render'),
         data = require('./src/extensions/data/data'),
-        templates = require('./src/extensions/template/template');
+        templates = require('./src/extensions/template/template'),
+        bindPropToAttr = require('./src/extensions/bindPropToAttr/bindPropToAttr'),
 
-    evts.on(WC);
-    evts.trigger(WC);
-    templates.template(WC);
-    templates.templateFragment(WC);
-    data(WC);
-    render(WC);
-    renderOnData(WC);
+        polyfills = require('./src/utils.js').polyfills,
 
+        // TODO: Find some way to do this better (async)
+        assignPolyfill = require('./polyfills/object.assign.js');
+
+    if (!Object.assign) {assignPolyfill();}
+
+    WC.extendWith([evts.on, evts.trigger, evts.off,
+                   templates.template, templates.templateFragment,
+                   data,
+                   render,
+                   renderOnData,
+                   bindPropToAttr]);
+
+    WC.polyfills = polyfills;
 
 })();

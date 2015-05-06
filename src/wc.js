@@ -31,6 +31,16 @@ let extensions = {},
             set: (ext) => new Error('Cannot overwrite `extensions` property on WC')
         },
 
+        extendWith: {
+            enumerable: true,
+            get: () => function (extensionsList) {
+                extensionsList = Array.isArray(extensionsList) ? extensionsList : [extensionsList];
+                extensionsList.forEach(function (extension) {
+                    extension(WC);
+                });
+            }
+        },
+
         missingDeps: {
             enumerable: true,
             get: () => function (extention, deps) {

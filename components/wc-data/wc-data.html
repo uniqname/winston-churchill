@@ -1,0 +1,46 @@
+<script src="../../dist/winston-churchill.js"></script>
+<template></template>
+<script>
+var dm = WC.register('wc-data'),
+
+    goGetIt = function (src, payload, cb) {
+        if (!src) { return; }
+        var xhr = new XMLHttpRequest();
+        cb = cb || payload;
+        payload = (cb === payload) ? undefined : payload;
+        xhr.open('get', src);
+        xhr.onload = function () {
+            cb.call(null, xhr.responseText);
+        };
+        xhr.send(payload);
+    };
+
+    dm.prototype.on('created', function () {
+        Object.defineProperty(this, 'src', {
+            enumerable: true,
+            get: function () {
+                return this.getAttribute('src');
+            },
+            set: function (val) {
+                this.setAttribute('src', val);
+            }
+        });
+    });
+
+    dm.prototype.on('attached', function () {
+        var component = this;
+        goGetIt(component.src, function (data) {
+            component.trigger('wc-data', JSON.parse(data));
+        });
+    });
+
+    dm.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
+        var component = this;
+        console.log(arguments);
+        if ( attrName === 'src') {
+            goGetIt(component.src, function (data) {
+                component.trigger('wc-data', JSON.parse(data));
+            });
+        }
+    });
+</script>

@@ -1,0 +1,57 @@
+<script src="../../dist/winston-churchill.js"></script>
+<link rel="import" href="../wc-data/wc-data.html" />
+<template id="wc-weather">
+    <!-- Structural style only -->
+    <style>
+        :host:unresolved { opacity: 0; }
+    </style>
+    <figure>
+        <figcaption>{{location}}: {{temperature}} {{description}}</figcaption>
+    </figure>
+    <wc-data src="http://api.openweathermap.org/data/2.5/weather?q={{location}}"></wc-data>
+</template>
+<script>
+    WC.polyfills([{
+        test: !!window.fetch,
+        src: '/bower_components/fetch/fetch.js'
+    }, {
+        test: !!Object.assign,
+        src: '/polyfills/object.assign.js'
+    }]).then(function () {
+        var Weather = WC.register('wc-weather'),
+            conversions = {
+                celsius: function (K) {
+                    return parseInt((K - 273.15) * 100, 10) / 100;
+                },
+                fahrenheit: function (K) {
+                    return parseInt(((K - 273.15)* 1.8000 + 32.00) * 100, 10) / 100;
+                },
+                kelvin: function (K) {
+                    return parseInt((K * 100), 10) / 100;
+                }
+            };
+
+        Weather.prototype.on('created', function () {
+            var thisWeather = this;
+            this.bindAttrToProp('location', 'location');
+            this.bindAttrToProp('system', 'system');
+            this.data = {
+                location: this.location
+            };
+
+            this.addEventListener('wc-data', function (evt) {
+                var convert = Object.keys(conversions).indexOf(thisWeather.system) >= 0 ? conversions[thisWeather.system] : conversions.celsius,
+                    temperature = convert(evt.detail.main.temp);
+                thisWeather.data = {
+                    detail: evt.detail,
+                    location: this.location,
+                    temperature: temperature,
+                    description: evt.detail.weather[0].description
+                };
+
+            });
+        });
+    });
+
+
+</script>

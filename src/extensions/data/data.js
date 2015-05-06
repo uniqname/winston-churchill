@@ -11,5 +11,10 @@ export default function data(WC) {
                 this.trigger('data', dataObj);
             }
         });
+        Object.observe(data, changes => {
+            if (changes.length) {
+                this.trigger('data', dataObj);
+            }
+        }, ['add', 'update', 'delete']);
     });
 }

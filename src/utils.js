@@ -8,3 +8,30 @@ export function protoChain(...objs) {
         return obj;
     });
 }
+
+
+/*
+    srcs: [srcObject]
+    srcObject: {
+        test: <Boolean || Function:Boolean>,
+        src: <String:URL to polyfill>
+    }
+*/
+
+export function polyfills(...srcs) {
+    return new Promise(function (res, rej) {
+        srcs.forEach(src => {
+            let test = (typeof src.test === 'function') ? src.test() : !!src;
+
+            if (test) {
+                res();
+            } else {
+                let scrpt = document.createElement('script');
+                scrpt.onerror = rej;
+                scrpt.onload = res;
+                scrpt.src = src;
+                document.body.appendChild(scrpt);
+            }
+        });
+    });
+}
