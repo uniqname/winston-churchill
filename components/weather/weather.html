@@ -1,73 +1,56 @@
 <script src="../../dist/winston-churchill.js"></script>
-<script src="../wc-data/wc-data.html"></script>
-<script src="/bower_components/object.observe/dist/object-observe-lite.min.js"></script>
+<link rel="import" href="../wc-data/wc-data.html" />
 <template id="wc-weather">
     <!-- Structural style only -->
     <style>
-
-        /*
-            best practice:
-                Make components opaque until they have been resolved.
-                Components are resolved when they have been registered
-                with the document, internal dependencies have resolved,
-                and component markup exists in the DOM.
-        */
-
-        /*
-            The :host pseudo class refers to the element "hosting" the shadow DOM.
-            In the case of web components, it is the component itself.
-        */
-        :host:unresolved {
-            opacity: 0;
-        }
+        :host:unresolved { opacity: 0; }
     </style>
     <figure>
-        <figcaption>{{location}}: {{weather[0].description}}</figcaption>
+        <figcaption>{{location}}: {{temperature}} {{description}}</figcaption>
     </figure>
     <wc-data src="http://api.openweathermap.org/data/2.5/weather?q={{location}}"></wc-data>
 </template>
 <script>
-// Object.assign polyfill.
-// TODO: Abstract this to a seperate file.
-(function () {
-    if (!Object.assign) {
-      Object.defineProperty(Object, 'assign', {
-        enumerable: false,
-        configurable: true,
-        writable: true,
-        value: function(target, firstSource) {
-          'use strict';
-          if (target === undefined || target === null) {
-            throw new TypeError('Cannot convert first argument to object');
-          }
+    WC.polyfills([{
+        test: !!window.fetch,
+        src: '/bower_components/fetch/fetch.js'
+    }, {
+        test: !!Object.assign,
+        src: '/polyfills/object.assign.js'
+    }]).then(function () {
+        var Weather = WC.register('wc-weather'),
+            conversions = {
+                celsius: function (K) {
+                    return parseInt((K - 273.15) * 100, 10) / 100;
+                },
+                fahrenheit: function (K) {
+                    return parseInt(((K - 273.15)* 1.8000 + 32.00) * 100, 10) / 100;
+                },
+                kelvin: function (K) {
+                    return parseInt((K * 100), 10) / 100;
+                }
+            };
 
-          var to = Object(target);
-          for (var i = 1; i < arguments.length; i++) {
-            var nextSource = arguments[i];
-            if (nextSource === undefined || nextSource === null) {
-              continue;
-            }
-            nextSource = Object(nextSource);
+        Weather.prototype.on('created', function () {
+            var thisWeather = this;
+            this.bindAttrToProp('location', 'location');
+            this.bindAttrToProp('system', 'system');
+            this.data = {
+                location: this.location
+            };
 
-            var keysArray = Object.keys(Object(nextSource));
-            for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-              var nextKey = keysArray[nextIndex];
-              var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-              if (desc !== undefined && desc.enumerable) {
-                to[nextKey] = nextSource[nextKey];
-              }
-            }
-          }
-          return to;
-        }
-      });
-    }
-})();
+            this.addEventListener('wc-data', function (evt) {
+                var convert = Object.keys(conversions).indexOf(thisWeather.system) >= 0 ? conversions[thisWeather.system] : conversions.celsius,
+                    temperature = convert(evt.detail.main.temp);
+                thisWeather.data = {
+                    detail: evt.detail,
+                    location: this.location,
+                    temperature: temperature,
+                    description: evt.detail.weather[0].description
+                };
 
-    var Weather = WC.register('wc-weather');
-
-    Weather.prototype.on('wc-data', function (evt) {
-        Object.assign(this.data || {}, evt.details);
+            });
+        });
     });
 
 

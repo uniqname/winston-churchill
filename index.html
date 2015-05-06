@@ -6,6 +6,7 @@
     <link rel="import" href="/components/wc-clock/wc-clock.html" />
     <link rel="import" href="/components/flash-card/flash-card.html" />
     <link rel="import" href="/components/wc-data/wc-data.html" />
+    <link rel="import" href="/components/weather/weather.html" />
 
     <style>
     body {
@@ -19,16 +20,16 @@
     </style>
 </head>
 <body>
-    <flash-card reference="Moroni 10:4">
+    <!-- <flash-card reference="Moroni 10:4">
         <wc-data src="http://api.openweathermap.org/data/2.5/weather?q=London"></wc-data>
         And when ye shall receive these things, I would exhort you that ye would ask God, the Eternal Father, in the name of Christ, if these things are not true; and if ye shall ask with a sincere heart, with real intent, having faith in Christ, he will manifest the truth of it unto you, by the power of the Holy Ghost.
     </flash-card>
     <flash-card reference="Alma 7:11">
         And he shall go forth, suffering pains and afflictions and temptations of every kind; and this that the word might be fulfilled which saith he will take upon him the pains and the sicknesses of his people.
-    </flash-card>
+    </flash-card> -->
 
-    <wc-clock time="current" face="analog" ></wc-clock>
-    <wc-clock face="digital" ></wc-clock>
+    <!-- <wc-clock time="current" face="analog" ></wc-clock> -->
+    <wc-weather location="Frankfurt" system="fahrenheit"></wc-weather>
 
         <script>
         (function () {

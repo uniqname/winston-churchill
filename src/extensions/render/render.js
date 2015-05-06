@@ -11,9 +11,10 @@ export default function render(WC) {
 
             [...shadowRoot.childNodes]
                     .forEach(node => shadowRoot.removeChild(node));
-            data.forEach(
-                datum => shadowRoot.appendChild( r(this.templateFragment, datum) )
-            );
+            data.forEach(datum => {
+                let shadowFrag = r(this.templateFragment, datum);
+                return shadowRoot.appendChild( shadowFrag );
+            });
             this.trigger('render');
         },
         set: () => console.error('templateFragment is not settable')

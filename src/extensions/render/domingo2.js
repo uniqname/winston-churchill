@@ -27,8 +27,10 @@ export default function r(templateFrag, data) {
         var newAttr = renderString(attrObj.name, data),
             newVal = renderString(attrObj.value, data);
 
-        if (attrObj.name !== newAttr || attrObj.value !== newVal) {
+        if (attrObj.name !== newAttr) {
             fragment.removeAttribute(attrObj.name);
+            fragment.setAttribute(newAttr, newVal);
+        } else if (attrObj.value !== newVal) {
             fragment.setAttribute(newAttr, newVal);
         }
     }

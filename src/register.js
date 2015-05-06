@@ -7,7 +7,6 @@ export default (name, config = {}) => {
         ext = config.extends;
 
     proto = isString(proto) ? document.createElement(proto) : proto;
-
     proto = util.protoChain(WC.extensions, proto);
 
     return document.registerElement(name, {
