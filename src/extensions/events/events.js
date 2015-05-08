@@ -18,9 +18,9 @@ let natives = {
             });
         }
     },
-    trigger = function (eventName, payload = {}, bubbles=true) {
+    trigger = function (eventName, payload = [], bubbles=true) {
         let queue = events[ eventName ] || [];
-        queue.forEach( listener => listener.call( this, payload ));
+        queue.forEach( listener => listener.apply( this, payload ));
         this.dispatchEvent( new CustomEvent(eventName, {detail: payload,
                                                         bubbles: bubbles}) );
     },
