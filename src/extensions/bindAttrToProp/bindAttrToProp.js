@@ -5,11 +5,14 @@ export default function data(WC) {
         WC.extensions.on('created', function () {
             let compo = this;
             Object.defineProperty(compo, 'bindAttrToProp', {
-                get: () => function (attr, prop) {
+                get: () => function (attr, prop, isBoolean) {
                     Object.defineProperty(compo, prop, {
                         enumerable: true,
-                        get: () => compo.getAttribute(attr),
-                        set: val => compo.setAttribute(val)
+                        get: () => isBoolean ? compo.hasAttribute(attr) : compo.getAttribute(attr),
+                        set: val => {
+                            let prop = isBoolean && !!val ? 'setAttribute' : 'removeAttribute   ';
+                            compo[prop](attr, val);
+                        }
                     });
                 }
             });

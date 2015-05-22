@@ -2,15 +2,6 @@
 <template id="flash-card">
     <!-- Structural style only -->
     <style>
-
-        /*
-            best practice:
-                Make components opaque until they have been resolved.
-                Components are resolved when they have been registered
-                with the document, internal dependencies have resolved,
-                and component markup exists in the DOM.
-        */
-
         /*
             The :host pseudo class refers to the element "hosting" the shadow DOM.
             In the case of web components, it is the component itself.
@@ -19,12 +10,7 @@
             display: flex;
             opacity: 1;
             position: relative;
-            /*box-shadow: .25em .25em 1em hsla(0, 0%, 0%, .25);*/
-            /*border: 1px solid hsla(0, 0%, 0%, .2);*/
-        }
-
-        :host:unresolved {
-            opacity: 0;
+            cursor: pointer;
         }
 
         :host > * {
@@ -68,7 +54,6 @@
             transform-style: preserve-3d;
         }
         .toggler:checked + [for] {
-            /*opacity: 1;*/
             z-index: 1;
             transform: rotate3d(0, 0, 0, 0deg);
         }
@@ -104,5 +89,9 @@ var Card = WC.register('flash-card');
                 reference: this.getAttribute('reference')
             };
         }
+    });
+
+    Card.prototype.on('data', function(e) {
+        /*console.log('data happend on my card', e);*/
     });
 </script>

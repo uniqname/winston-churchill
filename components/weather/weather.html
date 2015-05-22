@@ -4,9 +4,17 @@
     <!-- Structural style only -->
     <style>
         :host:unresolved { opacity: 0; }
+
+        .location::after {
+            content: ':';
+        }
     </style>
     <figure>
-        <figcaption>{{location}}: {{temperature}} {{description}}</figcaption>
+        <figcaption>
+            <span class="location">{{location}}</span>
+            <span class="temperature">{{temperature}}</span>
+            <span class="description">{{description}}</span>
+        </figcaption>
     </figure>
     <wc-data src="http://api.openweathermap.org/data/2.5/weather?q={{location}}"></wc-data>
 </template>
@@ -33,6 +41,11 @@
 
         Weather.prototype.on('created', function () {
             var thisWeather = this;
+
+            /*this.addEventListener('data', function (data) {
+                console.log('data just happened', data);
+            });*/
+
             this.bindAttrToProp('location', 'location');
             this.bindAttrToProp('system', 'system');
             this.data = {
@@ -48,7 +61,6 @@
                     temperature: temperature,
                     description: evt.detail.weather[0].description
                 };
-
             });
         });
     });

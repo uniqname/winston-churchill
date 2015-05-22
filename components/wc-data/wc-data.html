@@ -13,6 +13,8 @@ var dm = WC.register('wc-data'),
             cb.call(null, xhr.responseText);
         };
         xhr.send(payload);
+        //fetch(src, {})
+
     };
 
     dm.prototype.on('created', function () {
@@ -27,16 +29,15 @@ var dm = WC.register('wc-data'),
         });
     });
 
-    dm.prototype.on('attached', function () {
+    /*dm.prototype.on('attached', function () {
         var component = this;
         goGetIt(component.src, function (data) {
             component.trigger('wc-data', JSON.parse(data));
         });
-    });
+    });*/
 
     dm.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
         var component = this;
-        console.log(arguments);
         if ( attrName === 'src') {
             goGetIt(component.src, function (data) {
                 component.trigger('wc-data', JSON.parse(data));

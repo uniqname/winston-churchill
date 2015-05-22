@@ -37,7 +37,7 @@ export function on(WC) {
     // causing them to trigger relevant callbacks.
     Object.keys(natives).forEach(key => {
         WC.extensions[natives[key]] = function () {
-            trigger.call(this, key, [...arguments]);
+            trigger.call(this, key, ...arguments);
         };
     });
     WC.extensions.on = onEvent;

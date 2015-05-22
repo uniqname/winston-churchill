@@ -12,8 +12,9 @@ export default function data(WC) {
             }
         });
         Object.observe(data, changes => {
+            console.log('observed changes: ', changes);
             if (changes.length) {
-                this.trigger('data', dataObj);
+                this.trigger('data', data);
             }
         }, ['add', 'update', 'delete']);
     });
