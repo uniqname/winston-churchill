@@ -3,43 +3,48 @@
 <head>
     <title>Demo for Winston Churchill</title>
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="bower_components/fetch/fetch.js"></script>
     <link rel="import" href="/components/wc-clock/wc-clock.html" />
     <link rel="import" href="/components/flash-card/flash-card.html" />
     <link rel="import" href="/components/wc-data/wc-data.html" />
     <link rel="import" href="/components/weather/weather.html" />
+    <link rel="import" href="/components/wc-accordion/wc-accordion-item.html" />
 
     <style>
     body {
         display: flex;
         flex-flow: row wrap;
+        font-family: sans-serif;
     }
     flash-card {
         flex: 45%;
         margin: 1em 0;
     }
+
+    wc-weather::shadow .location {
+        font-weight: bold;
+        font-size:1.4em;
+    }
+    wc-weather::shadow .temperature::after {
+        content: '°F';
+    }
+    wc-weather::shadow .description {
+        color: #999;
+    }
+
     </style>
 </head>
 <body>
-    <!-- <flash-card reference="Moroni 10:4">
-        <wc-data src="http://api.openweathermap.org/data/2.5/weather?q=London"></wc-data>
-        And when ye shall receive these things, I would exhort you that ye would ask God, the Eternal Father, in the name of Christ, if these things are not true; and if ye shall ask with a sincere heart, with real intent, having faith in Christ, he will manifest the truth of it unto you, by the power of the Holy Ghost.
-    </flash-card>
     <flash-card reference="Alma 7:11">
         And he shall go forth, suffering pains and afflictions and temptations of every kind; and this that the word might be fulfilled which saith he will take upon him the pains and the sicknesses of his people.
-    </flash-card> -->
+    </flash-card>
+    <flash-card reference="Moroni 10:4">
+        And when ye shall receive these things, I would exhort you that ye would ask God, the Eternal Father, in the name of Christ, if these things are not true; and if ye shall ask with a sincere heart, with real intent, having faith in Christ, he will manifest the truth of it unto you, by the power of the Holy Ghost.
+    </flash-card>
 
-    <!-- <wc-clock time="current" face="analog" ></wc-clock> -->
+    <wc-clock time="current" face="analog" ></wc-clock>
     <wc-weather location="Frankfurt" system="fahrenheit"></wc-weather>
+    <wc-weather location="Paris" system="fahrenheit"></wc-weather>
 
-        <script>
-        (function () {
-            [].slice.call(document.querySelectorAll('flash-card'))
-                .forEach(function (card) {
-                    card.addEventListener('wc-data', function (e) {
-                        console.log('data recieved: ', e);
-                    });
-                });
-        })();
-        </script>
     </body>
 </html>

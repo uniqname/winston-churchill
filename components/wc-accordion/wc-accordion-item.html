@@ -1,0 +1,37 @@
+<script src="../../dist/winston-churchill.js"></script>
+<template id="wc-accordion-item">
+    <style>
+        :host {
+            outline: none;
+        }
+    </style>
+    <details>
+        <summary>
+            {{label}}
+        </summary>
+        <content></content>
+    </details>
+</template>
+<script>
+    var AI = WC.register('wc-accordion-item');
+
+    AI.prototype.on('created', function () {
+        this.bindAttrToProp('open', 'open', true);
+        this.bindAttrToProp('label', 'label');
+        this.data = {
+            label: this.label
+        };
+
+        this.on('data', console.log.bind(window.console));
+    });
+
+    /*AI.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
+        this.trigger('attributeChanged:' + attrName, [oldval, newVal]);
+    });
+
+    AI.prototype.on('attributeChanged:label', function() {
+        this.data = {
+            label: this.label
+        };
+    })*/
+</script>

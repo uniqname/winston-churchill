@@ -1,22 +1,18 @@
-import r from './domingo2';
-
+import DOMingo from '../../../bower_components/DOMingo/ES6/DOMingo';
 export default function render(WC) {
 
-    if (WC.missingDeps('render', ['on', 'trigger']).length) { return; }
+    if (WC.missingDeps('render', ['on', 'trigger', 'templateFragment']).length) { return; }
 
-    Object.defineProperty(WC.extensions, 'render', {
-        get: () => function () {
-            let shadowRoot = this.shadowRoot || this.createShadowRoot(),
-            data = Array.isArray(this.data) ? this.data : [this.data];
+    WC.extensions.on('created', function () {
+        let shadowRoot = this.shadowRoot || this.createShadowRoot(),
+            render = DOMingo(this.templateFragment, shadowRoot);
 
-            [...shadowRoot.childNodes]
-                    .forEach(node => shadowRoot.removeChild(node));
-            data.forEach(datum => {
-                let shadowFrag = r(this.templateFragment, datum);
-                return shadowRoot.appendChild( shadowFrag );
-            });
-            this.trigger('render');
-        },
-        set: () => console.error('templateFragment is not settable')
+        Object.defineProperty(this, 'render', {
+            get: () => function (data) {
+                render(data);
+                this.trigger('render');
+            },
+            set: () => console.error('templateFragment is not settable')
+        });
     });
 }

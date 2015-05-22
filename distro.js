@@ -8,7 +8,7 @@
 
 
             WC.extensions.on('data', function (data) {
-                this.render(this.templateFragment, this.data);
+                this.render(this.data);
             });
         },
 
@@ -21,7 +21,7 @@
         render = require('./src/extensions/render/render'),
         data = require('./src/extensions/data/data'),
         templates = require('./src/extensions/template/template'),
-        bindPropToAttr = require('./src/extensions/bindPropToAttr/bindPropToAttr'),
+        bindAttrToProp = require('./src/extensions/bindAttrToProp/bindAttrToProp'),
 
         polyfills = require('./src/utils.js').polyfills,
 
@@ -35,7 +35,7 @@
                    data,
                    render,
                    renderOnData,
-                   bindPropToAttr]);
+                   bindAttrToProp]);
 
     WC.polyfills = polyfills;
 
