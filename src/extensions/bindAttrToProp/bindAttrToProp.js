@@ -10,7 +10,7 @@ export default function data(WC) {
                         enumerable: true,
                         get: () => isBoolean ? compo.hasAttribute(attr) : compo.getAttribute(attr),
                         set: val => {
-                            let prop = isBoolean && !!val ? 'setAttribute' : 'removeAttribute   ';
+                            let prop = isBoolean && !!val ? 'setAttribute' : 'removeAttribute';
                             compo[prop](attr, val);
                         }
                     });
