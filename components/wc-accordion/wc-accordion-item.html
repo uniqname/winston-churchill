@@ -3,35 +3,82 @@
     <style>
         :host {
             outline: none;
+            padding: .5em;
+            border-top: 1px solid hsla(0, 0%, 0%, .4);
+            display:block;
+            cursor: pointer;
+        }
+
+        :host(:first-of-type) {
+            border-top: none;
+        }
+        :host([open]) {
+            cursor: default;
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: inherit;
+        }
+
+        input {
+            display: none;
+        }
+        header {
+            font-size: 1.4em;
+        }
+
+        .content {
+            height: 0;
+            overflow: hidden;
+            padding-top: .5em;
+        }
+
+        :checked ~ .content {
+            height: auto;
         }
     </style>
-    <details>
-        <summary>
+    <label>
+        <input type="radio" name="{{itemOf}}">
+        <header class="label">
             {{label}}
-        </summary>
-        <content></content>
-    </details>
+        </header>
+        <div class="content">
+            <content></content>
+        </div>
+    </label>
 </template>
 <script>
+(function () {
     var AI = WC.register('wc-accordion-item');
 
     AI.prototype.on('created', function () {
+        var instance = this;
         this.bindAttrToProp('open', 'open', true);
         this.bindAttrToProp('label', 'label');
-        this.data = {
-            label: this.label
-        };
+        this.data.label = this.label;
 
-        this.on('data', console.log.bind(window.console));
+        this.shadowRoot.querySelector('input').addEventListener('change', function (changeEvt) {
+            instance.open = true;
+            instance.trigger('open', this, 'bubbles');
+        });
+        this.parentElement.addEventListener('open', function (openEvt) {
+            if (openEvt.target !== instance) {
+                instance.open = false;
+            }
+        });
     });
 
-    /*AI.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
-        this.trigger('attributeChanged:' + attrName, [oldval, newVal]);
+    AI.prototype.on('attached', function () {
+        this.data.itemOf = this.parentElement.uid;
     });
 
-    AI.prototype.on('attributeChanged:label', function() {
-        this.data = {
-            label: this.label
-        };
-    })*/
+    AI.prototype.on('attributeChanged', function (attrName, oldVal, newVal) {
+        this.trigger('attributeChanged:' + attrName, {oldValue: oldVal, newValue: newVal});
+    });
+
+    AI.prototype.on('attributeChanged:label', function(vals) {
+        this.data.label = vals.newValue;
+    });
+})();
 </script>

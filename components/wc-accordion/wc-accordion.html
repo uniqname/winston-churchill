@@ -1,0 +1,21 @@
+<script src="../../dist/winston-churchill.js"></script>
+<template id="wc-accordion-item">
+    <style>
+        :host {
+            border: 1px solid hsla(0, 0%, 0%, .4);
+            border-radius: .25rem;
+        }
+    </style>
+    <content select="wc-accordion-item"></content>
+</template>
+<script>
+    Accordion = WC.register('wc-accordion');
+    Accordion.prototype.on('created', function () {
+        var instance = this;
+        this.uid = 'uid' + crypto.getRandomValues(new Uint32Array(1))[0];
+
+        this.addEventListener('open', function (openEvt) {
+            /*instance.trigger('open', openEvt.target);*/
+        });
+    });
+</script>
