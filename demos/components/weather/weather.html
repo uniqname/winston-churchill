@@ -1,4 +1,4 @@
-<script src="../../dist/winston-churchill.js"></script>
+<script src="../../../dist/winston-churchill.js"></script>
 <link rel="import" href="../wc-data/wc-data.html" />
 <template id="wc-weather">
     <!-- Structural style only -->
@@ -19,13 +19,13 @@
     <wc-data src="http://api.openweathermap.org/data/2.5/weather?q={{location}}"></wc-data>
 </template>
 <script>
-    WC.polyfills([{
+    WC.polyfiller({
         test: !!window.fetch,
-        src: '/bower_components/fetch/fetch.js'
+        fill: '/bower_components/fetch/fetch.js'
     }, {
         test: !!Object.assign,
-        src: '/polyfills/object.assign.js'
-    }]).then(function () {
+        fill: '/polyfills/object.assign.js'
+    }).then(function () {
         var Weather = WC.register('wc-weather'),
             conversions = {
                 celsius: function (K) {

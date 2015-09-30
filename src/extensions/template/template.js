@@ -1,8 +1,6 @@
-export function template(WC) {
-    if (WC.missingDeps('template', ['on']).length) { return; }
-
+export function template(wcProto) {
     let doc = document.currentScript.ownerDocument;
-    WC.extensions.on('created', function () {
+    wcProto.on('created', function () {
         let templateEl = doc.querySelector('template');
 
         Object.defineProperty(this, 'template', {
@@ -12,14 +10,12 @@ export function template(WC) {
     });
 }
 
-export function templateFragment(WC) {
+export function templateFragment(wcProto) {
 
-    if (WC.missingDeps('templateFragment', ['on']).length) { return; }
-
-    WC.extensions.on('created', function () {
+    wcProto.on('created', function () {
         Object.defineProperty(this, 'templateFragment', {
             get: () => document.importNode(this.template.content, true),
-            set: (templ) => console.error('templateFragment is not settable')
+            set: () => console.error('templateFragment is not settable')
         });
     });
 }

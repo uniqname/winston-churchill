@@ -1,22 +1,18 @@
-export default function data(WC) {
+export default function data(wcProto) {
 
-    if (!WC.missingDeps('bindAttrToProp', ['on', 'trigger']).length) {
-
-        WC.extensions.on('created', function () {
-            let compo = this;
-            Object.defineProperty(compo, 'bindAttrToProp', {
-                get: () => function (attr, prop, isBoolean) {
-                    Object.defineProperty(compo, prop, {
-                        enumerable: true,
-                        get: () => isBoolean ? compo.hasAttribute(attr) : compo.getAttribute(attr),
-                        set: val => {
-                            let prop = isBoolean && !!val ? 'setAttribute' : 'removeAttribute';
-                            compo[prop](attr, val);
-                        }
-                    });
-                }
-            });
+    wcProto.on('created', function () {
+        let component = this;
+        Object.defineProperty(component, 'bindAttrToProp', {
+            get: () => function (attr, prop, isBoolean) {
+                Object.defineProperty(component, prop, {
+                    enumerable: true,
+                    get: () => isBoolean ? component.hasAttribute(attr) : component.getAttribute(attr),
+                    set: val => {
+                        let theProp = isBoolean && !!val ? 'setAttribute' : 'removeAttribute';
+                        component[theProp](attr, val);
+                    }
+                });
+            }
         });
-    }
-    return WC;
+    });
 }

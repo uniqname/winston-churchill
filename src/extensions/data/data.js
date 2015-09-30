@@ -1,18 +1,15 @@
-export default function data(WC) {
+export default function data(proto) {
 
-    if (WC.missingDeps('data', ['on', 'trigger']).length) { return; }
-
-    WC.extensions.on('created', function () {
-        var data = {};
+    proto.on('created', function () {
+        let theData = {};
         Object.defineProperty(this, 'data', {
-            get: () => data,
+            get: () => theData,
             set: (dataObj) => {
-                data = dataObj;
+                theData = dataObj;
                 this.trigger('data', dataObj);
             }
         });
         Object.observe(data, changes => {
-            console.log('observed changes: ', changes);
             if (changes.length) {
                 this.trigger('data', data);
             }

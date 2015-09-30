@@ -9,7 +9,7 @@ export default function (objIn) {
             }
             return events[evtName];
         };
-    Object.keys(source).forEach( key => {
+    Object.keys(source).forEach(key => {
         if (reservedKeys.indexOf(key) >= 0) {
             //some error
         }
@@ -19,7 +19,7 @@ export default function (objIn) {
                 objOut.trigger('access', {
                     name: key,
                     object: objOut,
-                    type: 'access',
+                    type: 'access'
                 });
                 return source[key];
             },
@@ -62,7 +62,7 @@ export default function (objIn) {
 
     Object.defineProperty(objOut, 'trigger', {
         get: () => function (evtName, data) {
-            getQ(evtName).forEach( cb => cb.apply(objOut, [data]) );
+            getQ(evtName).forEach(cb => cb.apply(objOut, [data]));
         }
     });
   return objOut;

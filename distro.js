@@ -1,42 +1,26 @@
-(function () {
-    //This is will be the WC distro.
-    // import WC from './src/index';
-    let WC = require('./src/wc'),
+//This is will be the WC distro.
+import WC from './src/wc';
+import {on, trigger, off} from './src/extensions/events/events';
+import render from './src/extensions/render/render';
+import data from './src/extensions/data/data';
+import { template, templateFragment } from './src/extensions/template/template';
+import bindAttrToProp from './src/extensions/bindAttrToProp/bindAttrToProp';
+import { polyfiller } from './src/utils';
+import assign from './polyfills/object.assign-polyfill';
 
-        renderOnData = function (WC) {
-            if (WC.missingDeps('renderOnData', ['on', 'templateFragment', 'data']).length) { return; }
 
+let renderOnData = function (proto) {
+    proto.on('data', function () {
+        this.render(this.data);
+    });
+};
 
-            WC.extensions.on('data', function (data) {
-                this.render(this.data);
-            });
-        },
-
-    // import on from './extensions/on';
-    // import render from './extensions/render';
-    // import data from './extensions/data';
-    // import template, { templateFragment} from './extensions/template';
-
-        evts = require('./src/extensions/events/events'),
-        render = require('./src/extensions/render/render'),
-        data = require('./src/extensions/data/data'),
-        templates = require('./src/extensions/template/template'),
-        bindAttrToProp = require('./src/extensions/bindAttrToProp/bindAttrToProp'),
-
-        polyfills = require('./src/utils.js').polyfills,
-
-        // TODO: Find some way to do this better (async)
-        assignPolyfill = require('./polyfills/object.assign.js');
-
-    if (!Object.assign) {assignPolyfill();}
-
-    WC.extendWith([evts.on, evts.trigger, evts.off,
-                   templates.template, templates.templateFragment,
-                   data,
-                   render,
-                   renderOnData,
-                   bindAttrToProp]);
-
-    WC.polyfills = polyfills;
-
-})();
+polyfiller({
+    test: !!Object.assign,
+    fill: function () { assign(); }
+}).then(function () {
+    [on, trigger, off, data, template, templateFragment,
+     render, renderOnData, bindAttrToProp].map(extension => {
+        WC.extend(extension);
+    });
+});

@@ -14,22 +14,25 @@ export function protoChain(...objs) {
     srcs: [srcObject]
     srcObject: {
         test: <Boolean || Function:Boolean>,
-        src: <String:URL to polyfill>
+        fill: <String:URL to polyfill>
     }
 */
-
-export function polyfills(...srcs) {
+export function polyfiller(...tests) {
     return new Promise(function (res, rej) {
-        srcs.forEach(src => {
-            let test = (typeof src.test === 'function') ? src.test() : !!src;
+        tests.forEach(testObj => {
+            let passes = (typeof testObj.test === 'function') ? testObj.test() : testObj.test,
+                filler = testObj.fill;
 
-            if (test) {
+            if (passes) {
+                res();
+            } else if (typeof fill === 'function') {
+                filler();
                 res();
             } else {
                 let scrpt = document.createElement('script');
                 scrpt.onerror = rej;
                 scrpt.onload = res;
-                scrpt.src = src;
+                scrpt.src = testObj.fill;
                 document.body.appendChild(scrpt);
             }
         });

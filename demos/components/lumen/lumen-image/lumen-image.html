@@ -1,0 +1,51 @@
+<script src="../../../../../dist/winston-churchill.js"></script>
+<template id="lumen-image">
+    <style>
+        :host {
+            margin:0 0 $spacing--800;
+            &__wrapper {
+                position:relative;
+            }
+            &__copyright {
+                position:absolute;
+                bottom:6px;
+                left: 8px;
+                color:$color--white;
+                font-size: $font__size--100;
+                // text-shadow:1px 1px 1px $color--black__700;
+                line-height: $font__line-height--400;
+            }
+            &__caption {
+                color:$color--black__600;
+                font-size:$font__size--400;
+                line-height: $font__line-height--400;
+                margin-top:5px;
+            }
+        }
+    </style>
+    <figure>
+        <div class="container">
+            <img src="{{src}}" alt="{{alt}}" />
+            <span class="copyright">{{copyright}}</span>
+        </div>
+        <figcaption>
+            <content select="lumen-image-caption"></content>
+        </figcaption>
+    </figure>
+</template>
+<script>
+    (function () {
+        var LumenImage = WC.register('lumen-image'),
+            LumenImageCaption = WC.register('lumen-image-caption');
+
+        LumenImage.prototype.on('created', function () {
+            this.bindAttrToProp('src', 'src');
+            this.bindAttrToProp('alt', 'alt');
+            this.bindAttrToProp('copyright', 'copyright');
+
+            this.data.src = this.src;
+            this.data.alt = this.alt;
+            this.data.copyright = this.copyright;
+        });
+    })();
+</script>

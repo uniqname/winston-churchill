@@ -1,15 +1,13 @@
-import DOMingo from '../../../bower_components/DOMingo/ES6/DOMingo';
-export default function render(WC) {
+import domingo from '../../../bower_components/DOMingo/ES6/DOMingo';
+export default function render(wcProto) {
 
-    if (WC.missingDeps('render', ['on', 'trigger', 'templateFragment']).length) { return; }
-
-    WC.extensions.on('created', function () {
+    wcProto.on('created', function () {
         let shadowRoot = this.shadowRoot || this.createShadowRoot(),
-            render = DOMingo(this.templateFragment, shadowRoot);
+            renderWith = domingo(this.templateFragment, shadowRoot);
 
         Object.defineProperty(this, 'render', {
             get: () => function (data) {
-                render(data);
+                renderWith(data);
                 this.trigger('render');
             },
             set: () => console.error('templateFragment is not settable')

@@ -1,16 +1,22 @@
 import * as util from './utils';
+import { proto as wcProto } from './wc';
 
-let isString = thing => util.typeOf(thing) === 'string';
+const isString = thing => util.typeOf(thing) === 'string';
 
-export default (name, config = {}) => {
-    let proto = config.prototype || HTMLElement.prototype,
-        ext = config.extends;
+export default (name, options) => {
 
-    proto = isString(proto) ? document.createElement(proto) : proto;
-    proto = util.protoChain(WC.extensions, proto);
+    // Can't destructure `opts` argument since its
+    // properties are reserved words.
+    let opts = options || {};
+    let proto = opts.prototype || HTMLElement.prototype;
+
+    //if a string, assume it's the name of an element
+    proto = isString(proto) ? document.createElement(proto).constructor.prototype : proto;
+
+    proto = util.protoChain(wcProto, proto);
 
     return document.registerElement(name, {
-        prototype: Object.create(proto, {}),
-        extends: ext
+        prototype: Object.create(proto),
+        extends: opts.extends
     });
 };
