@@ -1,6 +1,6 @@
 export default function (objIn) {
     let source = Object.preventExtensions(Object.assign({}, objIn)),
-        objOut = Object.create(objIn.constructor.prototype),
+        objOut = Object.create(Object.getPrototypeOf(objIn)),
         reservedKeys = ['on', 'trigger', 'off', 'one'],
         events = {},
         getQ = (evtName) => {
